@@ -100,7 +100,7 @@ export default {
       if (!value) {
         return;
       }
-      this.$store.dispatch("user/getSite", value, this.arr).then(res => {
+      this.$store.dispatch("user/getSite", value).then(res => {
         // this.DepartCity = res;
         //不用失焦
         this.form.departCity=res[0].value
@@ -142,7 +142,7 @@ export default {
       if (!value) {
         return;
       }
-      this.$store.dispatch("user/getSite", value, this.arr).then(res => {
+      this.$store.dispatch("user/getSite", value).then(res => {
         this.DestCity = res;
         cb(res);
       });

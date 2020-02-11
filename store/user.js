@@ -56,7 +56,7 @@ export const actions = {
   })
   },
   //根据输入搜索所有提示的目的地数据
- getSite(store,params,arr){
+ getSite(store,params){
  return this.$axios({
     url: "/airs/city",
     params: {
@@ -65,7 +65,7 @@ export const actions = {
   }).then(res => {
     const { data } = res.data;
     //现在需要让这个数组有一个value属性（提示下拉框的展示的内容，数组里有个name属性（广州市），得取到这个属性，再去掉这个“市”）
-     arr = data.map(v => {
+    const arr = data.map(v => {
       v.value = v.name.replace("市", "");
       return v;
     });
