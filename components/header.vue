@@ -35,11 +35,12 @@
           </nuxt-link>
           <!-- 试一试能不能使用store管理得数据 -->
         </el-row>
-        <span class="el-dropdown-link">
-        </span>
+        <span class="el-dropdown-link"> </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item divided>个人中心</el-dropdown-item>
-          <el-dropdown-item @click="tuichu" divided >退出登录</el-dropdown-item>
+          <el-dropdown-item divided
+            ><div @click="tuichu">退出登录</div></el-dropdown-item
+          >
         </el-dropdown-menu>
       </el-dropdown>
     </el-row>
@@ -48,12 +49,18 @@
 
 <script>
 export default {
- methods: {
-   tuichu(){
-   console.log(1111);
-   
-   }
- }
+  methods: {
+    tuichu() {
+      console.log('点击退出');
+      
+    //退出是没有接口的，只需要把仓库的存的数据变空即可
+    this.$store.commit('user/setuserInfo',{
+      token:'',
+      user:{}
+    })
+    this.$message.success('退出成功')
+    }
+  }
 };
 </script>
 
@@ -104,11 +111,10 @@ export default {
     vertical-align: middle;
     border-radius: 16px;
   }
-  &:hover{
-    img{
+  &:hover {
+    img {
       border: 2px solid rgb(219, 120, 39);
     }
   }
-  
 }
 </style>
