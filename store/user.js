@@ -21,14 +21,7 @@ export const mutations ={
     setuserInfo(state,data){
     state.userInfo=data
     },
-    //退出登录
-    tuichu(state, info){
-      if(process.browser){
-        localStorage.removeItem('store')
-      }
-      state.userInfo={}
-    }
-
+    
 }
 
 export const actions = {
@@ -50,7 +43,35 @@ export const actions = {
         //怎么确定是不是成功呢成功得有个反应吧，所有得利用user。js里面的
         //需要做个提示  这个
       });
-  }
- 
+  },
+  //获取验证码请求
+  getTelMa(store,data){
+  return this.$axios({
+    url:'/captchas',
+    method:'POST',
+    data:{tel:data}
+  }).then(res=>{
+    console.log(res);
+    
+  })
+  },
+  //根据输入搜索所有提示的目的地数据
+ getSite(store,params,arr){
+ return this.$axios({
+    url: "/airs/city",
+    params: {
+      name: params
+    }
+  }).then(res => {
+    const { data } = res.data;
+    //现在需要让这个数组有一个value属性（提示下拉框的展示的内容，数组里有个name属性（广州市），得取到这个属性，再去掉这个“市”）
+     arr = data.map(v => {
+      v.value = v.name.replace("市", "");
+      return v;
+    });
+    return arr;
+    //方便我们等得如果用户不点击搜索出来的列表 可默认取第一个
+  });
+ }
   
 };
