@@ -21,10 +21,10 @@
           :fetch-suggestions="queryDepartSearch"
           placeholder="请搜索出发城市"
           @select="handleDepartSelect"
-      
           class="el-autocomplete"
+            @blur="moren"
         ></el-autocomplete>
-            <!-- @blur="moren" -->
+      
       </el-form-item>
       <el-form-item label="到达城市">
         <el-autocomplete
@@ -45,7 +45,9 @@
           placeholder="请选择日期"
           style="width: 100%;"
           @change="handleDate"
+          :picker-options="pickerOptions1"
         >
+          >
         </el-date-picker>
       </el-form-item>
 
@@ -86,7 +88,14 @@ export default {
       DepartCity: [],
       //存放到达地的数组
       DestCity: [],
-      arr: []
+      arr: [],
+      //时间组件的对象
+      pickerOptions1: {
+      disabledDate(time) {
+        //24*3600*1000 如果不加 就选择不了当天的
+        return (time.getTime()+ 24*3600*1000) < Date.now();
+      }
+    },
     };
   },
   methods: {
@@ -96,33 +105,30 @@ export default {
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDepartSearch(value, cb) {
-      // console.log(value);
       if (!value) {
+        cb([])
         return;
       }
       this.$store.dispatch("user/getSite", value).then(res => {
-        // this.DepartCity = res;
-        //不用失焦
-        this.form.departCity=res[0].value
-        this.form.departCode=res[0].sort
+        this.DepartCity = res;
         cb(res);
       });
       //封装了，原代码见最底下
     },
 
     //失焦默认选第一个
-    // moren() {
-    //   if (this.form.departCity !== "") {
-    //     if (this.DepartCity.length === 0) {
-    //       return;
-    //     } else {
-    //       this.form.departCity = this.DepartCity[0].value;
-    //       this.form.departCode = this.DepartCity[0].sort;
-    //     }
-    //   } else {
-    //     this.DepartCity = [];
-    //   }
-    // },
+    moren() {
+      if (this.form.departCity !== "") {
+        if (this.DepartCity.length === 0) {
+          return;
+        } else {
+          this.form.departCity = this.DepartCity[0].value;
+          this.form.departCode = this.DepartCity[0].sort;
+        }
+      } else {
+        this.DepartCity = [];
+      }
+    },
     moren2() {
       if (this.form.destCity !== "") {
         if (this.DestCity.length === 0) {
@@ -133,14 +139,16 @@ export default {
         }
       } else {
         this.DestCity = [];
+      
       }
     },
 
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDestSearch(value, cb) {
-      if (!value) {
-        return;
+      if(!value){
+       cb([])
+       return
       }
       this.$store.dispatch("user/getSite", value).then(res => {
         this.DestCity = res;
@@ -203,7 +211,7 @@ export default {
         return;
       }
       //路由带参跳转query
-      this.$router.push({ path: "/air/iii", query: this.form });
+      this.$router.push({ path: "/air/flights", query: this.form });
     }
   },
   mounted() {}
