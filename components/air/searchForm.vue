@@ -212,6 +212,8 @@ export default {
       }
       //路由带参跳转query
       this.$router.push({ path: "/air/flights", query: this.form });
+      //将数据存放到仓库中，方便搜索历史模块的调用数据
+      this.$store.commit('ari/setData',this.form)
     }
   },
   mounted() {}
