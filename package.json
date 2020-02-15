@@ -1,7 +1,7 @@
 {
   "name": "xianyuns",
   "version": "1.0.0",
-  "description": "My stylish Nuxt.js project",
+  "description": "My stylish Nuxt.js project" ,
   "author": "liyepai",
   "private": true,
   "scripts": {
