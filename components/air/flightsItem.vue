@@ -53,7 +53,7 @@
             </el-col>
             <el-col :span="5" class="price"> ￥{{ item.settle_price }} </el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini">
+              <el-button type="warning" size="mini" @click="goOrder(item)">
                 选定
               </el-button>
               <p>剩余：{{ item.discount }}</p>
@@ -98,9 +98,20 @@ export default {
       const xc = endMM - startMM;
       //在分别求出小时 分钟 然后拼接
       //使用Math的方法进行取整
-      const xs=Math.floor(xc/60)
-      const fz =xc%60
-      return `${xs}小时${fz}分钟`
+      const xs = Math.floor(xc / 60);
+      const fz = xc % 60;
+      return `${xs}小时${fz}分钟`;
+    }
+  },
+  methods: {
+    goOrder(item) {
+      this.$router.push({
+        path: "/air/order",
+        query: {
+          id: this.data.id,
+          seat_xid: item.seat_xid
+        }
+      });
     }
   }
 };
