@@ -37,6 +37,7 @@
       <!-- 侧边栏 -->
       <div class="aside">
         <!-- 侧边栏组件 -->
+        <FlightsAside />
       </div>
     </el-row>
   </section>
@@ -46,13 +47,41 @@
 import FlightsListHead from "../../components/air/flightsListHead";
 import FlightsItem from "../../components/air/flightsItem";
 import FlightsFilters from "../../components/air/flightsFilters";
-
+import FlightsAside from "../../components/air/flightsAside";
 export default {
   components: {
     FlightsListHead,
     FlightsItem,
-    FlightsFilters
+    FlightsFilters,
+    FlightsAside
   },
+  //监听url的变化有变化重新请求
+  // watch: {
+  //   //在这里不用声明实例下的  不用加this
+  //   $route() {
+  //     // 重新发送请求
+  //     this.pageIndex=1;//重新设置在第一页不然有bug
+  //     this.getList();
+  //   }
+  // },
+  beforeRouteUpdate (to, from, next) {
+        // 每次url变化时候把pageIndex初始化为1
+        this.pageIndex = 1;
+        // 请求机票列表数据
+        this.$axios({
+        url: "/airs",
+        //axiospost请求带参是params，
+        //获取路由参数：this.$router.query
+        params: to.query
+      }).then(res => {
+        this.lists = res.data;
+        // 备份一个一样数据的数组传给子组件进行渲染，使用。。。展开运算符 是生成一个引用路径不一样的数组
+        //如果不使用展开  这lists和beifen  本质还是同一个数组 修改一个会影响另外一个数组
+        this.beifen = { ...res.data };
+        this.total = this.lists.total;
+      });
+        next();
+    },
   data() {
     return {
       //获取到的机票总数据，里面有flights()info{}options{}total总数据条数
@@ -95,21 +124,36 @@ export default {
 
   mounted() {
     //url栏上的参数只有在这个页面才能获取到  获取到 在引入的组件中 渲染 一样的
-    this.$axios({
-      url: "/airs",
-      //axiospost请求带参是params，
-      //获取路由参数：this.$router.query
-      params: this.$route.query
-    }).then(res => {
-      this.lists = res.data;
-      // 备份一个一样数据的数组传给子组件进行渲染，使用。。。展开运算符 是生成一个引用路径不一样的数组
-      //如果不使用展开  这lists和beifen  本质还是同一个数组 修改一个会影响另外一个数组
-      this.beifen = { ...res.data };
-      this.total = this.lists.total;
-    });
+    // this.$axios({
+    //   url: "/airs",
+    //   //axiospost请求带参是params，
+    //   //获取路由参数：this.$router.query
+    //   params: this.$route.query
+    // }).then(res => {
+    //   this.lists = res.data;
+    //   // 备份一个一样数据的数组传给子组件进行渲染，使用。。。展开运算符 是生成一个引用路径不一样的数组
+    //   //如果不使用展开  这lists和beifen  本质还是同一个数组 修改一个会影响另外一个数组
+    //   this.beifen = { ...res.data };
+    //   this.total = this.lists.total;
+    // });
+    this.getList();
   },
 
   methods: {
+    getList() {
+      this.$axios({
+        url: "/airs",
+        //axiospost请求带参是params，
+        //获取路由参数：this.$router.query
+        params: this.$route.query
+      }).then(res => {
+        this.lists = res.data;
+        // 备份一个一样数据的数组传给子组件进行渲染，使用。。。展开运算符 是生成一个引用路径不一样的数组
+        //如果不使用展开  这lists和beifen  本质还是同一个数组 修改一个会影响另外一个数组
+        this.beifen = { ...res.data };
+        this.total = this.lists.total;
+      });
+    },
     handleSizeChange(val) {
       this.pageSize = val;
     },
@@ -123,11 +167,11 @@ export default {
       if (arr === false) {
         this.isShow = false;
         this.isShow1 = false;
-        this.isShow2=true
-      } else if(arr!==false){
+        this.isShow2 = true;
+      } else if (arr !== false) {
         this.isShow = true;
-        this.isShow1 = true; 
-          this.isShow2=false
+        this.isShow1 = true;
+        this.isShow2 = false;
       }
     }
   }
